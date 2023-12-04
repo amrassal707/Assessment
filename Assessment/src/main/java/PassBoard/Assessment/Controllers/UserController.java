@@ -21,13 +21,14 @@ public class UserController {
 
     @PostMapping()
     public String createUser(@RequestBody User user){
-        if(user.getName().isEmpty()){
-            return "please enter the name";
+        if(user.getName().isEmpty() || user.getBalance().toString().isEmpty()){
+            return "please enter the name and/or balance";
         }
         else {
             return userService.createUser(user);
         }
 
     }
+
 
 }
