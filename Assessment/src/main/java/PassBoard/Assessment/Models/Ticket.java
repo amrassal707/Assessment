@@ -6,10 +6,10 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document(value = "tickets")
 @Data
-public class Tickets {
+public class Ticket {
 
     @Id
-    private Long id;
+    private String id;
 
     private String ticketName;
 
