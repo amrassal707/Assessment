@@ -25,7 +25,7 @@ public class UserService {
         boolean checkIfExists= users.stream().anyMatch((value)-> value.getName().equals(user.getName()));
 
         if(checkIfExists){
-            return "cant be saved";
+            return "already exists with that name";
         }
         else {
             userRepo.save(user);
