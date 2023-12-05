@@ -1,5 +1,6 @@
 package PassBoard.Assessment.Controllers;
 
+import PassBoard.Assessment.DTOs.UserDTO;
 import PassBoard.Assessment.Models.User;
 import PassBoard.Assessment.Services.UserService;
 import lombok.RequiredArgsConstructor;
@@ -15,17 +16,17 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping
-    public List<User> getUser(){
+    public List<UserDTO> getUser(){
         return userService.getAll();
     }
 
     @PostMapping()
-    public String createUser(@RequestBody User user){
-        if(user.getName().isEmpty() || user.getBalance().toString().isEmpty()){
+    public String createUser(@RequestBody UserDTO userDTO){
+        if(userDTO.getName().isEmpty() || userDTO.getBalance().toString().isEmpty()){
             return "please enter the name and/or balance";
         }
         else {
-            return userService.createUser(user);
+            return userService.createUser(userDTO);
         }
 
     }
