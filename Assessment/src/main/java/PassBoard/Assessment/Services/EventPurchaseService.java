@@ -53,6 +53,50 @@ public class EventPurchaseService {
 
 
     }
+    public String refundEvent(EventsPurchased eventsPurchased) {
+        User user = userService.findByName(eventsPurchased.getUser());
+        Event event = eventService.findByName(eventsPurchased.getEventName());
+
+        if (!user.toString().isEmpty() && !event.toString().isEmpty()) {
+            List<Ticket> tickets = event.getTickets();
+
+            for (int i = 0; i < tickets.size(); i++) {
+                if (tickets.get(i).getTicketName().equals(eventsPurchased.getTicket())) {
+                    Ticket ticket = tickets.get(i);
+
+                    // Check if the user has purchased this ticket
+                    EventsPurchased purchasedTicket = eventPurchaseRepo
+                            .findByUserAndEventNameAndTicket(eventsPurchased.getUser(), eventsPurchased.getEventName(),
+                                    eventsPurchased.getTicket());
+
+                    if (purchasedTicket != null && purchasedTicket.getQuantity() > 0) {
+                        // Refund the user
+                        Long refundAmount = purchasedTicket.getQuantity() * ticket.getPrice();
+                        user.setBalance(user.getBalance() + refundAmount);
+                        userService.updateUser(user);
+
+                        // Increase the ticket quantity
+                        ticket.setQuantity(ticket.getQuantity() + purchasedTicket.getQuantity());
+
+                        // Update the event's ticket list
+                        tickets.remove(i);
+                        tickets.add(ticket);
+                        event.setTickets(tickets);
+                        eventService.updateEvent(event);
+                        eventPurchaseRepo.delete(purchasedTicket);
+
+                        return "Refund processed successfully";
+                    } else {
+                        return "No tickets purchased for refund";
+                    }
+                }
+            }
+            return "No tickets for this event";
+        } else {
+            return "Event or user not available";
+        }
+    }
+
 
 
 }
