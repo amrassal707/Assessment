@@ -61,14 +61,6 @@ public class EventService {
         }
         else {
 
-            List<TicketDTO> ticketDTOS= ticketService.getAll();
-            for (Map.Entry<String, Long> entry : event.getTickets().entrySet()) {
-                String key = entry.getKey();
-                if (ticketDTOS.stream().noneMatch(ticketDTO -> ticketDTO.getName().equals(key))) {
-                    return ("this ticket is not available and ticket name is: " + key);
-                }
-
-            }
             eventRepo.save(event);
             return "saved";
         }

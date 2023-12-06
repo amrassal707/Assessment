@@ -8,6 +8,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 
 @Document(value = "event")
 @Data
@@ -17,7 +18,7 @@ public class Event {
 
     private String name;
 
-    private HashMap<String,Long> tickets;
+    private List<Ticket> tickets;
 
     @JsonFormat(pattern="yyyy-MM-dd")
     private Date startDate;
