@@ -1,7 +1,6 @@
 package PassBoard.Assessment.Services;
 
 import PassBoard.Assessment.DAO.EventRepo;
-import PassBoard.Assessment.DTOs.TicketDTO;
 import PassBoard.Assessment.Models.Event;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -16,7 +15,6 @@ import java.util.*;
 public class EventService {
 
     private final EventRepo eventRepo;
-    private final TicketService ticketService;
 
 
     public List<Event> getAll() {
