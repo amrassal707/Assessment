@@ -24,7 +24,6 @@ public class Event {
     @JsonFormat(pattern="yyyy-MM-dd")
     private Date endDate;
 
-    private Long price;
 
 
 
