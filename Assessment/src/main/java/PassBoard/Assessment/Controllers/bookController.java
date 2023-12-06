@@ -1,5 +1,6 @@
 package PassBoard.Assessment.Controllers;
 
+import PassBoard.Assessment.ExceptionHandling.Exceptionhandler;
 import PassBoard.Assessment.Models.EventsPurchased;
 import PassBoard.Assessment.Services.EventPurchaseService;
 import lombok.RequiredArgsConstructor;
@@ -23,11 +24,15 @@ public class bookController {
     }
     @PostMapping("/refund")
     public String refundEvent(@RequestBody EventsPurchased eventsPurchased) {
+        if(eventsPurchased.toString().isEmpty()){
+            throw  new Exceptionhandler("no data entered");
+        }
         return eventPurchaseService.refundEvent(eventsPurchased);
 
     }
     @GetMapping("/{name}")
     public List<EventsPurchased> getEventsByName(@PathVariable String name){
+
         return eventPurchaseService.getBookedEventsByName(name);
     }
 }
