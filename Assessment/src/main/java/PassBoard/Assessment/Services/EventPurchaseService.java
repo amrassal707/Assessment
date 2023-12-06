@@ -1,7 +1,6 @@
 package PassBoard.Assessment.Services;
 
 import PassBoard.Assessment.DAO.EventPurchaseRepo;
-import PassBoard.Assessment.DTOs.UserDTO;
 import PassBoard.Assessment.Models.Event;
 import PassBoard.Assessment.Models.EventsPurchased;
 import PassBoard.Assessment.Models.Ticket;
@@ -95,6 +94,11 @@ public class EventPurchaseService {
         } else {
             return "Event or user not available";
         }
+    }
+
+    public List<EventsPurchased> getBookedEventsByName(String name)
+    {
+        return eventPurchaseRepo.findEventsPurchasedByUser(name);
     }
 
 
