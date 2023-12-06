@@ -32,6 +32,19 @@ public class UserService {
             return "Saved";
         }
     }
+
+    public void updateUser(User user) {
+       userRepo.save(user);
+    }
+    public User findByName(String name) {
+          return userRepo.getUserByName(name);
+
+
+
+
+
+
+    }
     private UserDTO mapToDTO(User user) {
         UserDTO userDTO= new UserDTO();
         userDTO.setName(user.getName());

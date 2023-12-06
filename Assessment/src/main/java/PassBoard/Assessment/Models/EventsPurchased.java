@@ -10,13 +10,16 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class EventsPurchased {
 
     @Id
-    private Long id;
+    private String id;
 
-    @DBRef
-    private User user;
 
-    @DBRef
-    private Event event;
+    private String user;
+
+    private String eventName;
+
+    private String ticket;
+
+    private Long quantity;
 
 
 }

@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository // no need for it since I already extended to MongoRepo which is already annotated with @Repository
 public interface UserRepo extends MongoRepository<User,String> {
+    public User getUserByName(String name);
 }

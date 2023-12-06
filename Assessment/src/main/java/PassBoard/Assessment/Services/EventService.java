@@ -21,6 +21,9 @@ public class EventService {
         return eventRepo.findAll();
     }
 
+    public Event findByName(String name){
+        return eventRepo.findByName(name);
+    }
 
     public List<Event> getEventsBetweenDates(String startDate, String endDate) throws ParseException {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
@@ -35,7 +38,6 @@ public class EventService {
                     Date eventStartDate = event.getStartDate();
                     Date eventEndDate = event.getEndDate();
 
-                    // Remove the time component for accurate date comparison
                     try {
                         eventStartDate = dateFormat.parse(dateFormat.format(eventStartDate));
                         eventEndDate = dateFormat.parse(dateFormat.format(eventEndDate));
@@ -62,6 +64,10 @@ public class EventService {
             eventRepo.save(event);
             return "saved";
         }
+    }
+
+    public void updateEvent(Event event) {
+        eventRepo.save(event);
     }
 
 }
