@@ -39,12 +39,8 @@ public class UserService {
     public User findByName(String name) {
           return userRepo.getUserByName(name);
 
-
-
-
-
-
     }
+
     private UserDTO mapToDTO(User user) {
         UserDTO userDTO= new UserDTO();
         userDTO.setName(user.getName());

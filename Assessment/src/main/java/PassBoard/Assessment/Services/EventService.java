@@ -26,6 +26,7 @@ public class EventService {
     }
 
     public List<Event> getEventsBetweenDates(String startDate, String endDate) throws ParseException {
+        //setup the dateformat
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         dateFormat.setTimeZone(TimeZone.getTimeZone("EET"));
 
