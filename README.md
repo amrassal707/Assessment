@@ -1,5 +1,6 @@
 # Assessment
 Code in Main Branch
+
 The event planning platform is a simple way of booking events available.
 
 Here is the explanation of the code:
