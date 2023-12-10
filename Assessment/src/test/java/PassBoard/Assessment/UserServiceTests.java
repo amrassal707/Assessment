@@ -87,5 +87,5 @@ class UserServiceTest {
 		assertEquals("already exists with that name", result);
 	}
 
-	// Add more test cases as needed for other methods in UserService
+	
 }
