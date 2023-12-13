@@ -18,7 +18,7 @@ public class EventService {
 
 
     public List<Event> getAll() {
-        return eventRepo.findAll();
+        return Collections.unmodifiableList(eventRepo.findAll());
     }
 
     public Event findByName(String name){
@@ -56,15 +56,19 @@ public class EventService {
 
 
     public String createEvent(Event event) {
-        boolean checkIfExists=eventRepo.findAll().stream().anyMatch((event1)-> event1.getName().equals(event.getName()));
-        if(checkIfExists) {
-            return "already exists with that name";
+        if(checkEvent(event.getName())) {
+            return "already found";
         }
         else {
-
+            //adhering to single responsibility principle
+            // instead of doing the checking logic in the function, I created a checkEvent function to do the logic
             eventRepo.save(event);
             return "saved";
         }
+    }
+
+    public boolean checkEvent(String name) {
+        return eventRepo.findByName(name)!=null;
     }
 
     public void updateEvent(Event event) {
