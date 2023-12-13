@@ -12,26 +12,29 @@ import java.util.*;
 
 @Service
 @RequiredArgsConstructor
-public class EventService {
+public class EventService { //TODO  : Should implement EventServiceInterface
 
     private final EventRepo eventRepo;
 
 
     public List<Event> getAll() {
         return eventRepo.findAll();
-    }
+    } // TODO: Why passing Database Model instead of a DTO?
 
     public Event findByName(String name){
         return eventRepo.findByName(name);
-    }
+    } //TODO: what will be returned if no name found?
+    // TODO: Why passing Database Model instead of a DTO?
 
-    public List<Event> getEventsBetweenDates(String startDate, String endDate) throws ParseException {
+    public List<Event> getEventsBetweenDates(String startDate, String endDate) throws ParseException { // TODO: Why passing Database Model instead of a DTO?
         //setup the dateformat
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         dateFormat.setTimeZone(TimeZone.getTimeZone("EET"));
 
         Date localStartDate = dateFormat.parse(startDate);
         Date localEndDate = dateFormat.parse(endDate);
+
+        //TODO: validate date value here, so that if data is illogical, or infeasible, you raise exception
 
         return eventRepo.findAll()
                 .stream()
@@ -46,7 +49,7 @@ public class EventService {
                         throw new RuntimeException(e);
                     }
 
-                    return (eventStartDate.compareTo(localStartDate) >= 0 && eventEndDate.compareTo(localEndDate) <= 0);
+                    return (eventStartDate.compareTo(localStartDate) >= 0 && eventEndDate.compareTo(localEndDate) <= 0); //TODO (move the  validation before fetching from db)
                 })
                 .toList();
     }
@@ -61,7 +64,7 @@ public class EventService {
             return "already exists with that name";
         }
         else {
-
+            //
             eventRepo.save(event);
             return "saved";
         }

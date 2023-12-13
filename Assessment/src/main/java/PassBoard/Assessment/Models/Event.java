@@ -18,6 +18,7 @@ public class Event {
 
     private String name;
 
+    //TODO : Does MongoDB require to show cardinality? (OneToMany)?
     private List<Ticket> tickets;
 
     @JsonFormat(pattern="yyyy-MM-dd")

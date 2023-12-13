@@ -13,7 +13,7 @@ import java.util.List;
 @RequestMapping("/event")
 public class EventController {
 
-    private final EventService eventService;
+    private final EventService eventService; //TODO : Broke Dependency Inversion principle, should inject interface, not implementation class
 
 
     @GetMapping()
@@ -21,7 +21,7 @@ public class EventController {
         return eventService.getAll();
     }
 
-    @GetMapping("/{startDate}/{endDate}")
+    @GetMapping("/{startDate}/{endDate}") //TODO(Why did you pass dates as path variable instead of  Request Parameter?)
     public List<Event> getEventBetweenDates(@PathVariable("startDate")@JsonFormat(pattern = "yyyy-MM-dd") String startDate,
                                             @PathVariable("endDate") @JsonFormat(pattern = "yyyy-MM-dd") String endDate) throws ParseException {
 
@@ -29,9 +29,9 @@ public class EventController {
     }
 
     @PostMapping
-    public String createEvent(@RequestBody Event event) {
+    public String createEvent(@RequestBody Event event) { //TODO (Why pass Database model Event instead of EventDto?)
 
-        return eventService.createEvent(event);
+        return eventService.createEvent(event);  // TODO: what is the difference between returning string, and ResponseEntity<String>?
     }
 
 }

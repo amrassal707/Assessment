@@ -16,7 +16,7 @@ public class UserService {
     private final UserRepo userRepo;
 
     public List<UserDTO> getAll() {
-        return userRepo.findAll().stream().map(this::mapToDTO).toList();
+        return userRepo.findAll().stream().map(this::mapToDTO).toList(); //tyb ma enta 3aml DTO hena, why not in the events as well?
     }
     public String createUser(UserDTO userDTO){
 
@@ -37,11 +37,11 @@ public class UserService {
        userRepo.save(user);
     }
     public User findByName(String name) {
-          return userRepo.getUserByName(name);
+          return userRepo.getUserByName(name); //TODO: throw exception if user not found (check .OrElseThrow)
 
     }
 
-    private UserDTO mapToDTO(User user) {
+    private UserDTO mapToDTO(User user) { //TODO: Try using ModelMapper as it is better and cleaner
         UserDTO userDTO= new UserDTO();
         userDTO.setName(user.getName());
         userDTO.setBalance(user.getBalance());

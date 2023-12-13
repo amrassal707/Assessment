@@ -13,14 +13,16 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class EventPurchaseService {
-    private final UserService userService;
-    private final EventService eventService;
-    private final EventPurchaseRepo eventPurchaseRepo;
+    private final UserService userService; //TODO : Broke Dependency Inversion principle, should inject interface, not implementation class
+    private final EventService eventService; //TODO : Broke Dependency Inversion principle, should inject interface, not implementation class
+    private final EventPurchaseRepo eventPurchaseRepo; //TODO : Broke Dependency Inversion principle, should inject interface, not implementation class
 
+//TODO : TIP: After finalizing coding inside a file, CTRL + A then CTRL + ALT + L to reformat the code.
+        public String bookEvent(EventsPurchased eventsPurchased) {
 
-    public String bookEvent(EventsPurchased eventsPurchased) {
-        User user= userService.findByName(eventsPurchased.getUser());
-        Event event= eventService.findByName(eventsPurchased.getEventName());
+        User user= userService.findByName(eventsPurchased.getUser()); //TODO : throw exception if user not found
+        Event event= eventService.findByName(eventsPurchased.getEventName());  //TODO : throw exception if Event not found
+
         if(!user.toString().isEmpty() && !event.toString().isEmpty()) {
             List<Ticket> tickets = event.getTickets();
             for(int i =0 ; i<tickets.size();i++) {
@@ -47,19 +49,19 @@ public class EventPurchaseService {
           return "no tickets for this event";
         }
         else {
-            return "event or user not available";
+            return "event or user not available";  ///TODO : better to throw exceptions
         }
 
 
     }
     public String refundEvent(EventsPurchased eventsPurchased) {
-        User user = userService.findByName(eventsPurchased.getUser());
-        Event event = eventService.findByName(eventsPurchased.getEventName());
+        User user = userService.findByName(eventsPurchased.getUser()); //TODO : throw exception if user not found
+        Event event = eventService.findByName(eventsPurchased.getEventName()); //TODO : throw exception if Event not found
 
         if (!user.toString().isEmpty() && !event.toString().isEmpty()) {
             List<Ticket> tickets = event.getTickets();
 
-            for (int i = 0; i < tickets.size(); i++) {
+            for (int i = 0; i < tickets.size(); i++) {  
                 if (tickets.get(i).getTicketName().equals(eventsPurchased.getTicket())) {
                     Ticket ticket = tickets.get(i);
 
@@ -92,7 +94,7 @@ public class EventPurchaseService {
             }
             return "No tickets for this event";
         } else {
-            return "Event or user not available";
+            return "Event or user not available"; ///TODO : better to throw exceptions
         }
     }
 
