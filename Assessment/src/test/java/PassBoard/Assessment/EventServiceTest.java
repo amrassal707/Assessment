@@ -31,7 +31,7 @@ class EventServiceTest {
         // Arrange
         when(eventRepo.findAll()).thenReturn(Collections.singletonList(new Event()));
 
-        // Act as if we have an instance available based on the above function
+        // Act
         List<Event> events = eventService.getAll();
 
         // Assert if the data is mocked successfully
@@ -75,7 +75,7 @@ class EventServiceTest {
         existingEvent.setName("Test Event");
         when(eventRepo.findAll()).thenReturn(Collections.singletonList(existingEvent));
 
-        // Act as if we have an instance available based on the above function
+        // Act
         Event newEvent = new Event();
         //creating new event with the same name
         newEvent.setName("Test Event");
