@@ -20,7 +20,7 @@ public class EventPurchaseService {
     private final EventPurchaseRepo eventPurchaseRepo;
 
 
-    public EventsPurchased purchaseEvent(EventsPurchased eventsPurchased) {
+    public EventsPurchased purchaseTicket(EventsPurchased eventsPurchased) {
         UserDTO userDTO = getUser(eventsPurchased.getUser());
         EventDTO eventDTO = getEvent(eventsPurchased.getEventName());
         eventDTO.getTickets().stream()

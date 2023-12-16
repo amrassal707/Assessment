@@ -1,6 +1,5 @@
 package PassBoard.Assessment.Controllers;
 
-import PassBoard.Assessment.ExceptionHandling.Exceptionhandler;
 import PassBoard.Assessment.Models.EventsPurchased;
 import PassBoard.Assessment.Services.Implementations.EventPurchaseService;
 import lombok.RequiredArgsConstructor;
@@ -10,7 +9,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/book")
+@RequestMapping("/purchase-event")
 public class EventPurchaseController {
 
 
@@ -19,8 +18,8 @@ public class EventPurchaseController {
 
 
     @PostMapping()
-    public String bookEvent(@RequestBody EventsPurchased eventsPurchased) {
-      return eventPurchaseService.purchaseEvent(eventsPurchased);
+    public EventsPurchased bookEvent(@RequestBody EventsPurchased eventsPurchased) {
+      return eventPurchaseService.purchaseTicket(eventsPurchased);
     }
 //    @PostMapping("/refund")
 //    public String refundEvent(@RequestBody EventsPurchased eventsPurchased) {
