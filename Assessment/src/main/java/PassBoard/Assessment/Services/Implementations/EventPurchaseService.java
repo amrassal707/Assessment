@@ -20,10 +20,9 @@ public class EventPurchaseService {
     private final EventPurchaseRepo eventPurchaseRepo;
 
 
-    public String purchaseEvent(EventsPurchased eventsPurchased) {
-        UserDTO userDTO = userService.getUserByName(eventsPurchased.getUser());
-        EventDTO eventDTO = eventService.getEventByName(eventsPurchased.getEventName());
-
+    public EventsPurchased purchaseEvent(EventsPurchased eventsPurchased) {
+        UserDTO userDTO = getUser(eventsPurchased.getUser());
+        EventDTO eventDTO = getEvent(eventsPurchased.getEventName());
         eventDTO.getTickets().stream()
                 .filter(ticket1 -> ticket1.getTicketName().equals(eventsPurchased.getTicket()))
                 .filter(ticket1 -> ticket1.getQuantity() > eventsPurchased.getQuantity() && ticket1.getPrice() < userDTO.getBalance())
@@ -44,10 +43,18 @@ public class EventPurchaseService {
                         }
                 );
 
-
-        return "Saved";
+        return eventPurchaseRepo.save(eventsPurchased);
 
     }
+
+    private UserDTO getUser(String userName) {
+        return userService.getUserByName(userName);
+    }
+
+    private EventDTO getEvent(String eventName) {
+        return eventService.getEventByName(eventName);
+    }
+
 
 //    public String refundEvent(EventsPurchased eventsPurchased) {
 //        User user = userService.findByName(eventsPurchased.getUser());
@@ -93,11 +100,9 @@ public class EventPurchaseService {
 //        }
 //    }
 
-    public List<EventsPurchased> getBookedEventsByName(String name)
-    {
+    public List<EventsPurchased> getBookedEventsByName(String name) {
         return eventPurchaseRepo.findEventsPurchasedByUser(name);
     }
-
 
 
 }
