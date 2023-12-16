@@ -63,7 +63,7 @@ public class EventService implements EventServiceInterface {
         return EventCreationResponse.successful();
     }
 
-    public Event updateEvent(EventDTO eventDTO) {
+    public Event updateEventTickets(EventDTO eventDTO) {
         Event event= eventRepo.findByName(eventDTO.getName()).get();
         event.setTickets(eventDTO.getTickets());
         return eventRepo.save(event);

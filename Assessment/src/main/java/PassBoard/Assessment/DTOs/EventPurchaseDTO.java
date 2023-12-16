@@ -5,7 +5,7 @@ public class EventPurchaseDTO {
 
     private String eventName;
 
-    private String ticket;
+    private String ticketType;
 
     private Long quantity;
 }

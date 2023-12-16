@@ -1,5 +1,6 @@
 package PassBoard.Assessment.Controllers;
 
+import PassBoard.Assessment.DTOs.EventPurchaseDTO;
 import PassBoard.Assessment.Models.EventsPurchased;
 import PassBoard.Assessment.Services.Implementations.EventPurchaseService;
 import lombok.RequiredArgsConstructor;
@@ -30,7 +31,7 @@ public class EventPurchaseController {
 //
 //    }
     @GetMapping("/{name}")
-    public List<EventsPurchased> getEventsByName(@PathVariable String name){
+    public List<EventPurchaseDTO> getEventsByName(@PathVariable String name){
 
         return eventPurchaseService.getBookedEventsByName(name);
     }

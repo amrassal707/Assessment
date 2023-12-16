@@ -11,5 +11,5 @@ public interface EventServiceInterface {
     EventDTO getEventByName(String name);
 
     EventCreationResponse createEvent(EventDTO eventDTO);
-    Event updateEvent(EventDTO eventDTO);
+    Event updateEventTickets(EventDTO eventDTO);
 }
