@@ -1,6 +1,7 @@
 package PassBoard.Assessment.Controllers;
 
 import PassBoard.Assessment.DTOs.EventDTO;
+import PassBoard.Assessment.ExceptionHandling.Exceptionhandler;
 import PassBoard.Assessment.Models.Event;
 import PassBoard.Assessment.Responses.EventCreationResponse;
 import PassBoard.Assessment.Services.Implementations.EventService;
@@ -14,7 +15,7 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/event")
+@RequestMapping("/events")
 public class EventController {
 
     private final EventService eventService;
@@ -34,10 +35,15 @@ public class EventController {
 
     @PostMapping
     public ResponseEntity<EventCreationResponse> createEvent(@RequestBody EventDTO eventDTO) {
+        try {
+            EventCreationResponse response = eventService.createEvent(eventDTO);
+            HttpStatus status = response.isSuccess() ? HttpStatus.CREATED : HttpStatus.BAD_REQUEST;
+            return ResponseEntity.status(status).body(response);
+        }
+        catch (Exceptionhandler exceptionhandler){
+            throw exceptionhandler;
+        }
 
-        EventCreationResponse response = eventService.createEvent(eventDTO);
-        HttpStatus status = response.isSuccess() ? HttpStatus.CREATED : HttpStatus.BAD_REQUEST;
-        return ResponseEntity.status(status).body(response);
     }
 
 }

@@ -1,6 +1,5 @@
 package PassBoard.Assessment.Responses;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter

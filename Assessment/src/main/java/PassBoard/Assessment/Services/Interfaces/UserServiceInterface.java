@@ -11,4 +11,5 @@ public interface UserServiceInterface {
     UserCreationResponse createUser(UserDTO userDTO);
     boolean checkUser(String name);
     UserDTO getUserByName(String name);
+    void updateUser(UserDTO userDTO);
 }

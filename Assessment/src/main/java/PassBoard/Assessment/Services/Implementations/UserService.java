@@ -36,6 +36,12 @@ public class UserService implements UserServiceInterface {
 
     }
 
+    public void updateUser(UserDTO userDTO){
+        User user= userRepo.getUserByName(userDTO.getName()).get(); //.get() will throw nosuchelement exception if user is not found
+        user.setBalance(user.getBalance());
+        userRepo.save(user);
+    }
+
     public boolean checkUser(String name) {
         return userRepo.getUserByName(name).isPresent();
     }

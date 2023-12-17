@@ -4,6 +4,7 @@ import PassBoard.Assessment.DAO.EventPurchaseRepo;
 import PassBoard.Assessment.DTOs.EventDTO;
 import PassBoard.Assessment.DTOs.EventPurchaseDTO;
 import PassBoard.Assessment.DTOs.UserDTO;
+import PassBoard.Assessment.ExceptionHandling.Exceptionhandler;
 import PassBoard.Assessment.Mappers.EventPurchaseMapper;
 import PassBoard.Assessment.Models.EventsPurchased;
 import PassBoard.Assessment.Models.Ticket;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -25,11 +27,13 @@ public class EventPurchaseService {
     private final EventPurchaseMapper eventPurchaseMapper;
 
 
-    public EventsPurchased purchaseTicket(EventsPurchased eventsPurchased) {
+    public EventsPurchased purchaseTicket(EventPurchaseDTO eventsPurchased) {
         UserDTO userDTO = getUser(eventsPurchased.getUser());
         EventDTO eventDTO = getEvent(eventsPurchased.getEventName());
-        // checking if the event is available along with if the quantity is available and the user's balance is sufficient for buying the tickets
-        eventDTO.getTickets()
+        List<Ticket> tickets = eventDTO.getTickets();
+        // checking if the event is available along with
+        // if the quantity is available and the user's balance is sufficient for buying the tickets
+        tickets
                 .stream()
                 .filter(selectedTicket ->
                         selectedTicket.getTicketName()
@@ -37,19 +41,22 @@ public class EventPurchaseService {
                                 && selectedTicket.getQuantity() > eventsPurchased.getQuantity()
                                 && selectedTicket.getPrice() < userDTO.getBalance())
                 .findFirst()
-                .ifPresentOrElse(selectedTicket -> processTicketPurchase(selectedTicket, eventDTO, userDTO, eventsPurchased.getQuantity()), () -> {
-            throw new NoSuchElementException("Ticket not found or insufficient quantity/balance. Please select a valid ticket.");
-        });
+                // if ticket is available then process the logic inside another private function to the service
+                .ifPresentOrElse(selectedTicket -> processTicketPurchase(selectedTicket, eventDTO, userDTO, eventsPurchased.getQuantity())
+                        , () -> {
+                            throw new NoSuchElementException("Ticket not found or insufficient quantity/balance. Please select a valid ticket.");
+                        });
 
-        return eventPurchaseRepo.save(eventsPurchased);
+        return eventPurchaseRepo.save(eventPurchaseMapper.DTOToEntity(eventsPurchased));
 
     }
 
     private void processTicketPurchase(Ticket selectedTicket, EventDTO eventDTO, UserDTO userDTO, long quantity) {
         int index = eventDTO.getTickets().indexOf(selectedTicket);
         selectedTicket.setQuantity(selectedTicket.getQuantity() - quantity);
-        userDTO.setBalance(userDTO.getBalance() - selectedTicket.getPrice());
-
+        // updating balance of the user
+        userDTO.setBalance(userDTO.getBalance() - (selectedTicket.getPrice() * quantity));
+        userService.updateUser(userDTO);
         // Replace the old ticket with the updated one
         eventDTO.getTickets().set(index, selectedTicket);
         eventService.updateEventTickets(eventDTO);
@@ -64,50 +71,48 @@ public class EventPurchaseService {
         return eventService.getEventByName(eventName);
     }
 
+    private EventPurchaseDTO validateEvent(String userName, String eventName, String ticketName) {
+        Optional<EventsPurchased> eventsPurchased = eventPurchaseRepo.findByUserAndEventNameAndTicket(userName, eventName, ticketName);
+        if (eventsPurchased.isPresent()) {
+            return eventPurchaseMapper.mapToDTO(eventsPurchased.get());
+        } else
+            throw new NoSuchElementException("The booked event you are looking for is not found, please check the userName and eventName");
 
-//    public String refundEvent(EventsPurchased eventsPurchased) {
-//        User user = userService.findByName(eventsPurchased.getUser());
-//        Event event = eventService.findByName(eventsPurchased.getEventName());
-//
-//        if (!user.toString().isEmpty() && !event.toString().isEmpty()) {
-//            List<Ticket> tickets = event.getTickets();
-//
-//            for (int i = 0; i < tickets.size(); i++) {
-//                if (tickets.get(i).getTicketName().equals(eventsPurchased.getTicket())) {
-//                    Ticket ticket = tickets.get(i);
-//
-//                    // Check if the user has purchased this ticket
-//                    EventsPurchased purchasedTicket = eventPurchaseRepo
-//                            .findByUserAndEventNameAndTicket(eventsPurchased.getUser(), eventsPurchased.getEventName(),
-//                                    eventsPurchased.getTicket());
-//
-//                    if (purchasedTicket != null && purchasedTicket.getQuantity() > 0) {
-//                        // Refund the user
-//                        Long refundAmount = purchasedTicket.getQuantity() * ticket.getPrice();
-//                        user.setBalance(user.getBalance() + refundAmount);
-//                        userService.updateUser(user);
-//
-//                        // Increase the ticket quantity
-//                        ticket.setQuantity(ticket.getQuantity() + purchasedTicket.getQuantity());
-//
-//                        // Update the event's ticket list
-//                        tickets.remove(i);
-//                        tickets.add(ticket);
-//                        event.setTickets(tickets);
-//                        eventService.updateEvent(event);
-//                        eventPurchaseRepo.delete(purchasedTicket);
-//
-//                        return "Refund processed successfully";
-//                    } else {
-//                        return "No tickets purchased for refund";
-//                    }
-//                }
-//            }
-//            return "No tickets for this event";
-//        } else {
-//            return "Event or user not available";
-//        }
-//    }
+    }
+
+    public void refundEvent(EventsPurchased eventsPurchased) {
+        try {
+            EventPurchaseDTO eventPurchaseDTO = validateEvent(eventsPurchased.getUser(), eventsPurchased.getEventName(), eventsPurchased.getTicket());
+            processTicketRefund(eventPurchaseDTO);
+
+        } catch (Exceptionhandler exceptionhandler) {
+            throw exceptionhandler;
+        }
+
+
+    }
+
+    private void updateEventTicket(EventDTO eventDTO) {
+        eventService.updateEventTickets(eventDTO);
+    }
+
+    private void updateUser(UserDTO userDTO) {
+        userService.updateUser(userDTO);
+    }
+
+
+    private void processTicketRefund(EventPurchaseDTO eventPurchaseDTO) {
+        EventDTO eventDTO = getEvent(eventPurchaseDTO.getEventName());
+        UserDTO userDTO = getUser(eventPurchaseDTO.getUser());
+        Ticket ticket = eventDTO.getTickets().stream().filter((ticket1) -> ticket1.getTicketName().equals(eventPurchaseDTO.getTicket())).findFirst().get();
+        ticket.setQuantity(ticket.getQuantity() + eventPurchaseDTO.getQuantity());
+        int index = eventDTO.getTickets().indexOf(ticket.getTicketName());
+        eventDTO.getTickets().set(index, ticket);
+        updateEventTicket(eventDTO);
+        userDTO.setBalance(userDTO.getBalance() + (eventPurchaseDTO.getQuantity() * ticket.getPrice()));
+        updateUser(userDTO);
+
+    }
 
     public List<EventPurchaseDTO> getBookedEventsByName(String name) {
         return eventPurchaseRepo.findEventsPurchasedByUser(name).stream().map(eventPurchaseMapper::mapToDTO).collect(Collectors.toUnmodifiableList());

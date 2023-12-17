@@ -1,6 +1,7 @@
 package PassBoard.Assessment.Controllers;
 
 import PassBoard.Assessment.DTOs.UserDTO;
+import PassBoard.Assessment.ExceptionHandling.Exceptionhandler;
 import PassBoard.Assessment.Responses.UserCreationResponse;
 import PassBoard.Assessment.Services.Interfaces.UserServiceInterface;
 import jakarta.validation.Valid;
@@ -25,9 +26,15 @@ public class UserController {
 
     @PostMapping
     public ResponseEntity<UserCreationResponse> createUser(@RequestBody @Valid UserDTO userDTO){
-        UserCreationResponse response = userService.createUser(userDTO);
-        HttpStatus status = response.isSuccess() ? HttpStatus.CREATED : HttpStatus.BAD_REQUEST;
-        return ResponseEntity.status(status).body(response);
+        try {
+            UserCreationResponse response = userService.createUser(userDTO);
+            HttpStatus status = response.isSuccess() ? HttpStatus.CREATED : HttpStatus.BAD_REQUEST;
+            return ResponseEntity.status(status).body(response);
+        }
+        catch (Exceptionhandler exceptionhandler){
+            throw exceptionhandler;
+        }
+
     }
 
 

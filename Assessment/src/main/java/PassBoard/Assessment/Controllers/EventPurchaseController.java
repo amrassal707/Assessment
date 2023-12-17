@@ -1,6 +1,7 @@
 package PassBoard.Assessment.Controllers;
 
 import PassBoard.Assessment.DTOs.EventPurchaseDTO;
+import PassBoard.Assessment.ExceptionHandling.Exceptionhandler;
 import PassBoard.Assessment.Models.EventsPurchased;
 import PassBoard.Assessment.Services.Implementations.EventPurchaseService;
 import lombok.RequiredArgsConstructor;
@@ -10,7 +11,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/purchase-event")
+@RequestMapping("/purchase-events")
 public class EventPurchaseController {
 
 
@@ -19,17 +20,15 @@ public class EventPurchaseController {
 
 
     @PostMapping()
-    public EventsPurchased bookEvent(@RequestBody EventsPurchased eventsPurchased) {
-      return eventPurchaseService.purchaseTicket(eventsPurchased);
+    public EventsPurchased purchaseEvent(@RequestBody EventPurchaseDTO eventPurchaseDTO ) {
+        try {
+            return eventPurchaseService.purchaseTicket(eventPurchaseDTO);
+        }
+     catch(Exceptionhandler exceptionhandler){
+            throw exceptionhandler;
+     }
     }
-//    @PostMapping("/refund")
-//    public String refundEvent(@RequestBody EventsPurchased eventsPurchased) {
-//        if(eventsPurchased.toString().isEmpty()){
-//            throw  new Exceptionhandler("no data entered");
-//        }
-//        return eventPurchaseService.refundEvent(eventsPurchased);
-//
-//    }
+
     @GetMapping("/{name}")
     public List<EventPurchaseDTO> getEventsByName(@PathVariable String name){
 
