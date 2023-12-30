@@ -35,9 +35,7 @@ public class EventPurchaseService {
         tickets
                 .stream()
                 .filter(selectedTicket ->
-                        selectedTicket.getTicketName()
-                                .equals(eventsPurchased.getTicket())
-                                && validateTicketPurchase(selectedTicket, userDTO.getBalance(), eventsPurchased.getQuantity()))
+                        validateTicketPurchase(selectedTicket, userDTO.getBalance(), eventsPurchased.getQuantity(), eventsPurchased.getTicket()))
                 .findFirst()
                 // if ticket is available then process the logic inside another private function to the service
                 .ifPresentOrElse(selectedTicket -> processTicketPurchase(selectedTicket, eventDTO, userDTO, eventsPurchased.getQuantity())
@@ -48,8 +46,9 @@ public class EventPurchaseService {
         return eventPurchaseRepo.save(eventPurchaseMapper.DTOToEntity(eventsPurchased));
 
     }
-    private boolean validateTicketPurchase(Ticket ticket,  long balance,  long quantity) {
-        return ticket.getQuantity() > quantity && ticket.getPrice() < balance;
+
+    private boolean validateTicketPurchase(Ticket ticket, long balance, long quantity, String eventPurchaseName) {
+        return ticket.getQuantity() > quantity && ticket.getPrice() < balance && ticket.getTicketName().equals(eventPurchaseName);
 
     }
 

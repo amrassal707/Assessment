@@ -31,7 +31,7 @@ public class EventService implements EventServiceInterface {
         return eventMapper.maptoDTO(eventRepo.findByName(name).orElseThrow(() -> new NoSuchElementException("Event not found")));
     }
 
-    public List<Event> getEventsBetweenDates(String startDate, String endDate) throws ParseException {
+    public List<EventDTO> getEventsBetweenDates(String startDate, String endDate) throws ParseException {
         //setup the dateformat
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         dateFormat.setTimeZone(TimeZone.getTimeZone("EET"));
@@ -51,7 +51,7 @@ public class EventService implements EventServiceInterface {
             }
 
             return (eventStartDate.compareTo(localStartDate) >= 0 && eventEndDate.compareTo(localEndDate) <= 0);
-        }).toList();
+        }).map(eventMapper::maptoDTO).toList();
     }
 
 

@@ -1,8 +1,10 @@
 package PassBoard.Assessment;
 
 import PassBoard.Assessment.DAO.EventRepo;
+import PassBoard.Assessment.DTOs.EventDTO;
+import PassBoard.Assessment.Mappers.EventMapper;
 import PassBoard.Assessment.Models.Event;
-import PassBoard.Assessment.Services.EventService;
+import PassBoard.Assessment.Services.Interfaces.EventServiceInterface;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -21,10 +23,13 @@ import static org.mockito.Mockito.when;
 class EventServiceTest {
 
     @InjectMocks
-    private EventService eventService;
+    private EventServiceInterface eventService;
 
     @Mock
     private EventRepo eventRepo;
+
+    @Mock
+    private EventMapper eventMapper;
 
     @Test
     void testGetAllEvents() {
@@ -32,7 +37,7 @@ class EventServiceTest {
         when(eventRepo.findAll()).thenReturn(Collections.singletonList(new Event()));
 
         // Act
-        List<Event> events = eventService.getAll();
+        List<EventDTO> events = eventService.getAll();
 
         // Assert if the data is mocked successfully
         assertEquals(1, events.size());
@@ -46,7 +51,7 @@ class EventServiceTest {
         when(eventRepo.findAll()).thenReturn(Collections.singletonList(new Event()));
 
         // Act as if we have an instance available based on the above function
-        List<Event> events = eventService.getEventsBetweenDates(startDate, endDate);
+        List<EventDTO> events = eventService.getEventsBetweenDates(startDate, endDate);
 
         // Assert if the data is mocked successfully
         assertEquals(1, events.size());
@@ -55,14 +60,15 @@ class EventServiceTest {
     @Test
     void testCreateEvent() {
         // Arrange
-        Event event = new Event();
-        event.setName("Test Event");
+        EventDTO eventDTO = new EventDTO();
+        eventDTO.setName("Test Event");
         when(eventRepo.findAll()).thenReturn(Collections.emptyList());
         // adding mocking statements to occur
-        when(eventRepo.save(any(Event.class))).thenReturn(event);
+
+        when(eventRepo.save(eventMapper.DTOToEntity(eventDTO))).thenReturn(eventMapper.DTOToEntity(eventDTO));
 
 
-        String result = eventService.createEvent(event);
+        String result = String.valueOf(eventService.createEvent(eventDTO));
 
         // Assert if the returned result is "saved"
         assertEquals("saved", result);
@@ -76,10 +82,10 @@ class EventServiceTest {
         when(eventRepo.findAll()).thenReturn(Collections.singletonList(existingEvent));
 
         // Act
-        Event newEvent = new Event();
+        EventDTO newEvent = new EventDTO();
         //creating new event with the same name
         newEvent.setName("Test Event");
-        String result = eventService.createEvent(newEvent);
+        String result = String.valueOf(eventService.createEvent(newEvent));
 
         // Assert if the data is the same
         assertEquals("already exists with that name", result);
