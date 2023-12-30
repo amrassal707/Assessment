@@ -38,8 +38,7 @@ public class EventPurchaseService {
                 .filter(selectedTicket ->
                         selectedTicket.getTicketName()
                                 .equals(eventsPurchased.getTicket())
-                                && selectedTicket.getQuantity() > eventsPurchased.getQuantity()
-                                && selectedTicket.getPrice() < userDTO.getBalance())
+                                && validateTicketPurchase(selectedTicket, userDTO.getBalance(), eventsPurchased.getQuantity()))
                 .findFirst()
                 // if ticket is available then process the logic inside another private function to the service
                 .ifPresentOrElse(selectedTicket -> processTicketPurchase(selectedTicket, eventDTO, userDTO, eventsPurchased.getQuantity())
@@ -48,6 +47,10 @@ public class EventPurchaseService {
                         });
 
         return eventPurchaseRepo.save(eventPurchaseMapper.DTOToEntity(eventsPurchased));
+
+    }
+    private boolean validateTicketPurchase(Ticket ticket,  long balance,  long quantity) {
+        return ticket.getQuantity() > quantity && ticket.getPrice() < balance;
 
     }
 
@@ -81,13 +84,8 @@ public class EventPurchaseService {
     }
 
     public void refundEvent(EventsPurchased eventsPurchased) {
-        try {
-            EventPurchaseDTO eventPurchaseDTO = validateEvent(eventsPurchased.getUser(), eventsPurchased.getEventName(), eventsPurchased.getTicket());
-            processTicketRefund(eventPurchaseDTO);
-
-        } catch (Exceptionhandler exceptionhandler) {
-            throw exceptionhandler;
-        }
+        EventPurchaseDTO eventPurchaseDTO = validateEvent(eventsPurchased.getUser(), eventsPurchased.getEventName(), eventsPurchased.getTicket());
+        processTicketRefund(eventPurchaseDTO);
 
 
     }

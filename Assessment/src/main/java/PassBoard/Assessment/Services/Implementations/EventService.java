@@ -23,12 +23,12 @@ public class EventService implements EventServiceInterface {
 
 
     public List<EventDTO> getAll() {
-        return eventRepo.findAll().stream().map(eventMapper::maptDTO).toList();
+        return eventRepo.findAll().stream().map(eventMapper::maptoDTO).toList();
     }
 
     public EventDTO getEventByName(String name) {
 
-        return eventMapper.maptDTO(eventRepo.findByName(name).orElseThrow(() -> new NoSuchElementException("Event not found")));
+        return eventMapper.maptoDTO(eventRepo.findByName(name).orElseThrow(() -> new NoSuchElementException("Event not found")));
     }
 
     public List<Event> getEventsBetweenDates(String startDate, String endDate) throws ParseException {

@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 public class EventMapper {
     private static final ModelMapper mapper= new ModelMapper();
 
-    public EventDTO maptDTO(Event event){
+    public EventDTO maptoDTO(Event event){
         return mapper.map(event,EventDTO.class);
     }
 
