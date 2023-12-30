@@ -4,7 +4,6 @@ import PassBoard.Assessment.DAO.EventPurchaseRepo;
 import PassBoard.Assessment.DTOs.EventDTO;
 import PassBoard.Assessment.DTOs.EventPurchaseDTO;
 import PassBoard.Assessment.DTOs.UserDTO;
-import PassBoard.Assessment.ExceptionHandling.Exceptionhandler;
 import PassBoard.Assessment.Mappers.EventPurchaseMapper;
 import PassBoard.Assessment.Models.EventsPurchased;
 import PassBoard.Assessment.Models.Ticket;
@@ -16,7 +15,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
-import java.util.stream.Collectors;
+
 
 @Service
 @RequiredArgsConstructor
@@ -113,7 +112,7 @@ public class EventPurchaseService {
     }
 
     public List<EventPurchaseDTO> getBookedEventsByName(String name) {
-        return eventPurchaseRepo.findEventsPurchasedByUser(name).stream().map(eventPurchaseMapper::mapToDTO).collect(Collectors.toUnmodifiableList());
+        return eventPurchaseRepo.findEventsPurchasedByUser(name).stream().map(eventPurchaseMapper::mapToDTO).toList();
     }
 
 
